@@ -2,7 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import MovieDetail from "./pages/MovieDetail"; // NEW
+import MovieDetail from "./pages/MovieDetail";
+import SeatSelection from "./pages/SeatSelection"; // NEW
 
 function PrivateRoute({ children }) {
   const user = localStorage.getItem("user");
@@ -17,24 +18,11 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <Home />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
+        <Route path="/movie/:id" element={<PrivateRoute><MovieDetail /></PrivateRoute>} />
 
         {/* NEW */}
-        <Route
-          path="/movie/:id"
-          element={
-            <PrivateRoute>
-              <MovieDetail />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/seats/:movieId" element={<PrivateRoute><SeatSelection /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );
