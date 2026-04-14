@@ -1,14 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/login";
+import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import MovieDetail from "./pages/MovieDetail"; // NEW
 
-// This checks if user is logged in
 function PrivateRoute({ children }) {
   const user = localStorage.getItem("user");
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
+  if (!user) return <Navigate to="/login" />;
   return children;
 }
 
@@ -19,12 +17,21 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Only logged-in users can see Home */}
         <Route
           path="/"
           element={
             <PrivateRoute>
               <Home />
+            </PrivateRoute>
+          }
+        />
+
+        {/* NEW */}
+        <Route
+          path="/movie/:id"
+          element={
+            <PrivateRoute>
+              <MovieDetail />
             </PrivateRoute>
           }
         />

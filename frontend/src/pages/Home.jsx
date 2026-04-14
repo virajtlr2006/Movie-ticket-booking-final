@@ -1,10 +1,23 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Home() {
   const navigate = useNavigate();
-
-  // Get the logged-in user from localStorage
   const user = JSON.parse(localStorage.getItem("user"));
+
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/movies")
+      .then((res) => {
+        setMovies(res.data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
   function handleLogout() {
     localStorage.removeItem("user");
@@ -12,46 +25,110 @@ function Home() {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.box}>
-        <h2>Welcome, {user?.name}! 🎬</h2>
-        <p style={{ color: "#555" }}>You are logged in as: {user?.email}</p>
-        <p style={{ color: "#888" }}>Movie listings coming in Phase 2...</p>
-        <button style={styles.button} onClick={handleLogout}>
-          Logout
-        </button>
+    <div style={styles.page}>
+      {/* Navbar */}
+      <div style={styles.navbar}>
+        <h2 style={{ margin: 0, color: "white" }}>🎬 MovieBook</h2>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <span style={{ color: "#ccc" }}>Hi, {user?.name}</span>
+          <button style={styles.logoutBtn} onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={styles.content}>
+        <h3 style={{ color: "#fff", marginBottom: "20px" }}>Now Showing</h3>
+
+        {loading ? (
+          <p style={{ color: "#ccc" }}>Loading movies...</p>
+        ) : (
+          <div style={styles.grid}>
+            {movies.map((movie) => (
+              <div
+                key={movie._id}
+                style={styles.card}
+                onClick={() => navigate(`/movie/${movie._id}`)}
+              >
+                <img src={movie.image} alt={movie.title} style={styles.poster} />
+                <div style={styles.cardBody}>
+                  <h4 style={styles.title}>{movie.title}</h4>
+                  <p style={styles.meta}>
+                    {movie.genre} &nbsp;|&nbsp; {movie.duration}
+                  </p>
+                  <p style={styles.rating}>⭐ {movie.rating}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 const styles = {
-  container: {
+  page: {
+    minHeight: "100vh",
+    background: "#141414",
+  },
+  navbar: {
+    background: "#1a1a1a",
+    padding: "16px 32px",
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
-    height: "100vh",
-    background: "#f0f0f0",
+    borderBottom: "1px solid #333",
   },
-  box: {
-    background: "white",
-    padding: "40px",
-    borderRadius: "10px",
-    width: "400px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "12px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-  },
-  button: {
-    padding: "12px",
-    background: "#333",
+  logoutBtn: {
+    padding: "8px 16px",
+    background: "#e50914",
     color: "white",
     border: "none",
     borderRadius: "6px",
-    fontSize: "16px",
     cursor: "pointer",
-    marginTop: "10px",
+    fontSize: "14px",
+  },
+  content: {
+    padding: "32px",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+    gap: "24px",
+  },
+  card: {
+    background: "#1f1f1f",
+    borderRadius: "10px",
+    overflow: "hidden",
+    cursor: "pointer",
+    transition: "transform 0.2s",
+    border: "1px solid #333",
+  },
+  poster: {
+    width: "100%",
+    height: "280px",
+    objectFit: "cover",
+    display: "block",
+  },
+  cardBody: {
+    padding: "12px",
+  },
+  title: {
+    color: "white",
+    margin: "0 0 6px",
+    fontSize: "15px",
+  },
+  meta: {
+    color: "#aaa",
+    fontSize: "13px",
+    margin: "0 0 4px",
+  },
+  rating: {
+    color: "#f5c518",
+    fontSize: "13px",
+    margin: 0,
   },
 };
 
