@@ -8,7 +8,6 @@ function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
 
-  // Update form fields as user types
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -32,86 +31,49 @@ function Register() {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.box}>
-        <h2>Create Account</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800">
+      <div className="max-w-md w-full bg-gradient-to-br from-gray-800 to-gray-900 p-10 rounded-xl shadow-xl border border-gray-700">
+        <h2 className="text-3xl font-bold text-white mb-2">Create your account</h2>
+        <p className="text-gray-400 mb-6">Join MovieBook to book seats instantly.</p>
 
-        {error && <p style={styles.error}>{error}</p>}
+        {error && <p className="text-red-400 mb-3">{error}</p>}
 
-        <input
-          style={styles.input}
-          type="text"
-          name="name"
-          placeholder="Your Name"
-          value={form.name}
-          onChange={handleChange}
-        />
-        <input
-          style={styles.input}
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-        />
-        <input
-          style={styles.input}
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            className="w-full p-3 rounded-md bg-gray-800 border border-gray-700 text-white"
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            value={form.name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="w-full p-3 rounded-md bg-gray-800 border border-gray-700 text-white"
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="w-full p-3 rounded-md bg-gray-800 border border-gray-700 text-white"
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
 
-        <button style={styles.button} onClick={handleSubmit}>
-          Register
-        </button>
+          <button type="submit" className="w-full btn-primary py-3">Create account</button>
+        </form>
 
-        <p>
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
+        <div className="mt-6 text-center text-gray-400">Already have an account? <Link className="text-indigo-300 font-medium" to="/login">Sign in</Link></div>
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-    background: "#f0f0f0",
-  },
-  box: {
-    background: "white",
-    padding: "40px",
-    borderRadius: "10px",
-    width: "350px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "12px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-  },
-  input: {
-    padding: "10px",
-    fontSize: "15px",
-    border: "1px solid #ccc",
-    borderRadius: "6px",
-  },
-  button: {
-    padding: "12px",
-    background: "#e50914",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    fontSize: "16px",
-    cursor: "pointer",
-  },
-  error: {
-    color: "red",
-    fontSize: "14px",
-  },
-};
 
 export default Register;

@@ -7,15 +7,13 @@ const TICKET_PRICE = 150;
 function ConfirmBooking() {
   const navigate = useNavigate();
 
-  // Get everything we saved in Phase 2 and Phase 3
   const user = JSON.parse(localStorage.getItem("user"));
   const selectedShow = JSON.parse(localStorage.getItem("selectedShow"));
   const selectedSeats = JSON.parse(localStorage.getItem("selectedSeats"));
 
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false); // true after booking is saved
+  const [done, setDone] = useState(false);
 
-  // If anything is missing, go back home
   if (!user || !selectedShow || !selectedSeats) {
     navigate("/");
     return null;
@@ -34,7 +32,6 @@ function ConfirmBooking() {
         seats: selectedSeats,
       });
 
-      // Clean up localStorage — we don't need these anymore
       localStorage.removeItem("selectedShow");
       localStorage.removeItem("selectedSeats");
 
@@ -45,21 +42,16 @@ function ConfirmBooking() {
     setLoading(false);
   }
 
-  // Show success screen after booking
   if (done) {
     return (
-      <div style={styles.page}>
-        <div style={styles.successBox}>
-          <div style={styles.checkmark}>✓</div>
-          <h2 style={styles.successTitle}>Booking Confirmed!</h2>
-          <p style={styles.successSub}>Enjoy your movie 🎬</p>
-          <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
-            <button style={styles.outlineBtn} onClick={() => navigate("/my-bookings")}>
-              View My Bookings
-            </button>
-            <button style={styles.redBtn} onClick={() => navigate("/")}>
-              Back to Home
-            </button>
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-10 shadow-xl text-center max-w-md w-full border border-gray-700">
+          <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center bg-brand text-white text-2xl shadow">✓</div>
+          <h2 className="text-2xl text-white mt-4">Booking Confirmed!</h2>
+          <p className="text-gray-400">Enjoy your movie 🎬</p>
+          <div className="flex gap-3 justify-center mt-6">
+            <button className="btn-ghost" onClick={() => navigate("/my-bookings")}>View My Bookings</button>
+            <button className="btn-primary" onClick={() => navigate("/")}>Back to Home</button>
           </div>
         </div>
       </div>
@@ -67,153 +59,47 @@ function ConfirmBooking() {
   }
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <h2 style={styles.heading}>Confirm Your Booking</h2>
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
+      <div className="bg-gray-900 rounded-xl p-8 max-w-2xl w-full border border-gray-800 shadow-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-700 p-4 rounded">
+            <h3 className="text-lg font-semibold">Booking Summary</h3>
+            <Row label="Movie" value={selectedShow.movieTitle} />
+            <Row label="Show Time" value={selectedShow.time} />
+            <Row label="Seats" value={selectedSeats.join(", ")} />
+            <Row label="Tickets" value={`${selectedSeats.length} × ₹${TICKET_PRICE}`} />
+            <div className="border-t border-gray-700 my-3" />
+            <Row label="Total Amount" value={`₹${totalAmount}`} big />
+          </div>
 
-        {/* Booking Summary */}
-        <div style={styles.summaryBox}>
-          <Row label="Movie" value={selectedShow.movieTitle} />
-          <Row label="Show Time" value={selectedShow.time} />
-          <Row label="Seats" value={selectedSeats.join(", ")} />
-          <Row label="Tickets" value={`${selectedSeats.length} × ₹${TICKET_PRICE}`} />
-          <div style={styles.divider} />
-          <Row label="Total Amount" value={`₹${totalAmount}`} big />
-        </div>
+          <div className="flex flex-col justify-between">
+            <div>
+              <h3 className="text-lg font-semibold">Payment</h3>
+              <p className="text-gray-400 mt-2">Payment integration placeholder. You can integrate Stripe/PayPal here.</p>
+              <div className="mt-4 space-y-3">
+                <input placeholder="Cardholder name" className="w-full p-3 rounded-md bg-gray-800 border border-gray-700 text-white" />
+                <input placeholder="Card number" className="w-full p-3 rounded-md bg-gray-800 border border-gray-700 text-white" />
+              </div>
+            </div>
 
-        {/* Action buttons */}
-        <div style={styles.actions}>
-          <button style={styles.outlineBtn} onClick={() => navigate(-1)}>
-            ← Change Seats
-          </button>
-          <button
-            style={{ ...styles.redBtn, opacity: loading ? 0.7 : 1 }}
-            onClick={handleConfirm}
-            disabled={loading}
-          >
-            {loading ? "Confirming..." : "Confirm & Pay ₹" + totalAmount}
-          </button>
+            <div className="mt-6 flex gap-3">
+              <button className="btn-ghost flex-1" onClick={() => navigate(-1)}>← Change Seats</button>
+              <button className="btn-primary flex-1" onClick={handleConfirm} disabled={loading}>{loading ? 'Confirming...' : `Confirm & Pay ₹${totalAmount}`}</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// Small helper component just for summary rows
 function Row({ label, value, big }) {
   return (
-    <div style={styles.row}>
-      <span style={{ color: "#888", fontSize: big ? "15px" : "14px" }}>{label}</span>
-      <span
-        style={{
-          color: big ? "#e50914" : "white",
-          fontWeight: big ? "bold" : "normal",
-          fontSize: big ? "18px" : "14px",
-        }}
-      >
-        {value}
-      </span>
+    <div className="flex justify-between items-center py-2">
+      <span className={`text-gray-400 ${big ? 'text-base' : 'text-sm'}`}>{label}</span>
+      <span className={`${big ? 'text-brand font-semibold' : 'text-white'}`}>{value}</span>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    background: "#141414",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "24px",
-  },
-  card: {
-    background: "#1f1f1f",
-    borderRadius: "12px",
-    padding: "40px",
-    width: "100%",
-    maxWidth: "460px",
-    border: "1px solid #333",
-  },
-  heading: {
-    color: "white",
-    margin: "0 0 28px",
-    fontSize: "22px",
-  },
-  summaryBox: {
-    background: "#141414",
-    borderRadius: "8px",
-    padding: "20px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "14px",
-  },
-  row: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  divider: {
-    height: "1px",
-    background: "#333",
-    margin: "4px 0",
-  },
-  actions: {
-    display: "flex",
-    gap: "12px",
-    marginTop: "28px",
-    flexWrap: "wrap",
-  },
-  outlineBtn: {
-    flex: 1,
-    padding: "12px",
-    background: "transparent",
-    color: "#ccc",
-    border: "1px solid #555",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontSize: "14px",
-  },
-  redBtn: {
-    flex: 2,
-    padding: "12px",
-    background: "#e50914",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontSize: "15px",
-    fontWeight: "bold",
-  },
-  successBox: {
-    background: "#1f1f1f",
-    borderRadius: "12px",
-    padding: "48px 40px",
-    textAlign: "center",
-    border: "1px solid #333",
-    maxWidth: "400px",
-    width: "100%",
-  },
-  checkmark: {
-    width: "64px",
-    height: "64px",
-    background: "#1a3a1a",
-    color: "#4caf50",
-    fontSize: "32px",
-    borderRadius: "50%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    margin: "0 auto 20px",
-    border: "2px solid #4caf50",
-  },
-  successTitle: {
-    color: "white",
-    margin: "0 0 8px",
-  },
-  successSub: {
-    color: "#aaa",
-    margin: 0,
-  },
-};
 
 export default ConfirmBooking;

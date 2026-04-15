@@ -19,130 +19,66 @@ function Home() {
       .catch(() => setLoading(false));
   }, []);
 
-  function handleLogout() {
-    localStorage.removeItem("user");
-    navigate("/login");
-  }
-
   return (
-    <div style={styles.page}>
-      {/* Navbar */}
-      {/* Navbar */}
-      <div style={styles.navbar}>
-        <h2 style={{ margin: 0, color: "white" }}>🎬 MovieBook</h2>
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <span style={{ color: "#ccc" }}>Hi, {user?.name}</span>
-          <button style={styles.myBookingsBtn} onClick={() => navigate("/my-bookings")}>
-            My Bookings
-          </button>
-          <button style={styles.logoutBtn} onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
-      </div>
+    <div className="min-h-screen bg-gray-900 text-white">
+      <main className="container py-12">
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center mb-8">
+          <div className="lg:col-span-2">
+            <h1 className="text-4xl font-extrabold leading-tight">Find your next movie night</h1>
+            <p className="text-gray-300 mt-3">Browse popular titles, pick a showtime and book seats in seconds.</p>
 
-      {/* Content */}
-      <div style={styles.content}>
-        <h3 style={{ color: "#fff", marginBottom: "20px" }}>Now Showing</h3>
+            <div className="mt-6 flex gap-3">
+              <input placeholder="Search movies, genres or actors" className="flex-1 p-3 rounded-md bg-gray-800 border border-gray-700 text-white" />
+              <button className="btn-primary">Search</button>
+            </div>
 
-        {loading ? (
-          <p style={{ color: "#ccc" }}>Loading movies...</p>
-        ) : (
-          <div style={styles.grid}>
-            {movies.map((movie) => (
-              <div
-                key={movie._id}
-                style={styles.card}
-                onClick={() => navigate(`/movie/${movie._id}`)}
-              >
-                <img src={movie.image} alt={movie.title} style={styles.poster} />
-                <div style={styles.cardBody}>
-                  <h4 style={styles.title}>{movie.title}</h4>
-                  <p style={styles.meta}>
-                    {movie.genre} &nbsp;|&nbsp; {movie.duration}
-                  </p>
-                  <p style={styles.rating}>⭐ {movie.rating}</p>
-                </div>
-              </div>
-            ))}
+            <div className="mt-6 flex gap-3 text-sm text-gray-400">
+              <span className="px-3 py-1 bg-gray-800 rounded">Popular</span>
+              <span className="px-3 py-1 bg-gray-800 rounded">Action</span>
+              <span className="px-3 py-1 bg-gray-800 rounded">Comedy</span>
+              <span className="px-3 py-1 bg-gray-800 rounded">Drama</span>
+            </div>
           </div>
-        )}
-      </div>
+
+          <div className="hidden lg:block">
+            <div className="card p-4">
+              <h3 className="text-lg font-semibold">Welcome back{user ? `, ${user.name}` : ''}</h3>
+              <p className="text-gray-400 mt-2">Check out trending movies and manage your bookings.</p>
+              <div className="mt-4 flex gap-2">
+                <button className="btn-primary" onClick={() => navigate('/my-bookings')}>My Bookings</button>
+                <button className="btn-ghost" onClick={() => navigate('/login')}>Account</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">Now Showing</h2>
+
+          {loading ? (
+            <p className="text-gray-400">Loading movies...</p>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+              {movies.map((movie) => (
+                <div key={movie._id} className="group cursor-pointer" onClick={() => navigate(`/movie/${movie._id}`)}>
+                  <div className="rounded overflow-hidden shadow-lg">
+                    <img src={movie.image} alt={movie.title} className="w-full h-44 object-cover transform group-hover:scale-105 transition" />
+                    <div className="p-3 bg-gray-800 border border-gray-700">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-semibold">{movie.title}</h4>
+                        <span className="text-yellow-400">⭐ {movie.rating}</span>
+                      </div>
+                      <p className="text-xs text-gray-400 mt-1">{movie.genre} • {movie.duration}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      </main>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    background: "#141414",
-  },
-  navbar: {
-    background: "#1a1a1a",
-    padding: "16px 32px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderBottom: "1px solid #333",
-  },
-  logoutBtn: {
-    padding: "8px 16px",
-    background: "#e50914",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontSize: "14px",
-  },
-  content: {
-    padding: "32px",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-    gap: "24px",
-  },
-  card: {
-    background: "#1f1f1f",
-    borderRadius: "10px",
-    overflow: "hidden",
-    cursor: "pointer",
-    transition: "transform 0.2s",
-    border: "1px solid #333",
-  },
-  poster: {
-    width: "100%",
-    height: "280px",
-    objectFit: "cover",
-    display: "block",
-  },
-  cardBody: {
-    padding: "12px",
-  },
-  title: {
-    color: "white",
-    margin: "0 0 6px",
-    fontSize: "15px",
-  },
-  meta: {
-    color: "#aaa",
-    fontSize: "13px",
-    margin: "0 0 4px",
-  },
-  rating: {
-    color: "#f5c518",
-    fontSize: "13px",
-    margin: 0,
-  },
-  myBookingsBtn: {
-    padding: "8px 16px",
-    background: "transparent",
-    color: "white",
-    border: "1px solid #555",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontSize: "14px",
-  },
-};
 
 export default Home;

@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Header from './components/Header';
+import Footer from './components/Footer';
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
@@ -16,16 +18,20 @@ function PrivateRoute({ children }) {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      <Header />
+      <div className="pt-20 min-h-[calc(100vh-160px)]">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
-        <Route path="/movie/:id" element={<PrivateRoute><MovieDetail /></PrivateRoute>} />
-        <Route path="/seats/:movieId" element={<PrivateRoute><SeatSelection /></PrivateRoute>} />
-        <Route path="/confirm" element={<PrivateRoute><ConfirmBooking /></PrivateRoute>} />
-        <Route path="/my-bookings" element={<PrivateRoute><MyBookings /></PrivateRoute>} />
-      </Routes>
+          <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
+          <Route path="/movie/:id" element={<PrivateRoute><MovieDetail /></PrivateRoute>} />
+          <Route path="/seats/:movieId" element={<PrivateRoute><SeatSelection /></PrivateRoute>} />
+          <Route path="/confirm" element={<PrivateRoute><ConfirmBooking /></PrivateRoute>} />
+          <Route path="/my-bookings" element={<PrivateRoute><MyBookings /></PrivateRoute>} />
+        </Routes>
+      </div>
+      <Footer />
     </BrowserRouter>
   );
 }
