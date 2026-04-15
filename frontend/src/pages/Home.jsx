@@ -27,10 +27,14 @@ function Home() {
   return (
     <div style={styles.page}>
       {/* Navbar */}
+      {/* Navbar */}
       <div style={styles.navbar}>
         <h2 style={{ margin: 0, color: "white" }}>🎬 MovieBook</h2>
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <span style={{ color: "#ccc" }}>Hi, {user?.name}</span>
+          <button style={styles.myBookingsBtn} onClick={() => navigate("/my-bookings")}>
+            My Bookings
+          </button>
           <button style={styles.logoutBtn} onClick={handleLogout}>
             Logout
           </button>
@@ -129,6 +133,15 @@ const styles = {
     color: "#f5c518",
     fontSize: "13px",
     margin: 0,
+  },
+  myBookingsBtn: {
+    padding: "8px 16px",
+    background: "transparent",
+    color: "white",
+    border: "1px solid #555",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontSize: "14px",
   },
 };
 
